@@ -35,7 +35,26 @@ authRouter.get('/auth/status', async (ctx) => {
         ctx.type = 'html';
         ctx.body = fs.createReadStream('views/status.html');
     } else {
+        ctx.redirect('/api/v1/auth/login');
+    }
+});
+
+authRouter.get('/auth/login', async (ctx) => {
+    if(!ctx.isAuthenticated()) {
+        ctx.type = 'html';
+        ctx.body = fs.createReadStream('views/login.html');
+    } else {
+        ctx.redirect('/api/v1/auth/status');
+    }
+});
+
+authRouter.get('/auth/logout', async (ctx) => {
+    if(ctx.isAuthenticated()) {
+        ctx.logout();
         ctx.redirect('/auth/login');
+    } else {
+        ctx.body = { success: false };
+        ctx.throw(401);
     }
 });
 

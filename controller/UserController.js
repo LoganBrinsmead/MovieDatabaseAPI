@@ -1,5 +1,5 @@
 const db = require('../database/connection');           // include the database connection
-
+const bcrypt = require('bcryptjs');
 class UserController {
 
     // add a user to the database
@@ -9,10 +9,12 @@ class UserController {
             const query = `INSERT INTO User
             (firstName, lastName, username, password, signUpDate)
             VALUES (?, ?, ?, ?, ?);`;
+            const salt = bcrypt.genSaltSync();                      // salt and hash user password
+            const hash = bcrypt.hashSync(user.password, salt);
             db.query(
                 {
                     sql: query,
-                    values: [user.firstName, user.lastName, user.username, user.password, user.signUpDate]
+                    values: [user.firstName, user.lastName, user.username, hash, user.signUpDate]
                 }, (err, res) => {
                     if (err) {
                         ctx.status = 400;

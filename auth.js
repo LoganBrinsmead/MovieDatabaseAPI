@@ -1,8 +1,13 @@
 const passport = require('koa-passport');
 const UserController = require('./controller/UserController');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 
 const options = {};
+
+function comparePass(userPassword, databasePassword) {
+    return bcrypt.compareSync(userPassword, databasePassword);
+}
 
 passport.serializeUser((user, done) => { done(null, user.username); });
 
@@ -21,7 +26,7 @@ passport.use(new LocalStrategy(options, (username, password, done) => {
         return response.json();
     }).then(function(response) {
         if(!response) return done(null, false);
-        if(password === response[0].password) {
+        if(comparePass(password, response[0].password)) {
             return done(null, response[0]);
         } else {
             return done(null, false);

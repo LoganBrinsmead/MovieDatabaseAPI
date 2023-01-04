@@ -7,6 +7,7 @@ const mount = require("koa-mount");
 const cors = require('koa-cors');
 const session = require('koa-session');
 const passport = require('koa-passport');
+const RedisStore = require('koa-redis');
 
 const defaultRouter = require('./router/default.js'); 
 const path = require('path');
@@ -52,6 +53,10 @@ api.use(session(api));
 require('./auth');
 api.use(passport.initialize());
 api.use(passport.session());
+
+api.use(session({
+    store: new RedisStore()
+}, api));
 
 // api.use(function * setUserInContext (next) {
 //     this.user = this.req.user
