@@ -14,7 +14,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, './.env') })          // environment variables
 const api = new koa();                  // set api to be koa object
 
-const API_PORT = process.env.API_PORT;                  // define api port to listen on
+const API_PORT = process.env.API_PORT || 1337;                  // define api port to listen on
 
 api.use(Logger());
 api.use(cors());

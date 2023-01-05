@@ -48,10 +48,22 @@ authRouter.get('/auth/login', async (ctx) => {
     }
 });
 
+authRouter.post('/auth/login', async (ctx) => {
+    return passport.authenticate('local', (err, user, info, status) => {
+      if (user) {
+        ctx.login(user);
+        ctx.redirect('/api/v1/auth/status');
+      } else {
+        ctx.status = 400;
+        ctx.body = { status: 'error' };
+      }
+    })(ctx);
+  });
+
 authRouter.get('/auth/logout', async (ctx) => {
     if(ctx.isAuthenticated()) {
         ctx.logout();
-        ctx.redirect('/auth/login');
+        ctx.redirect('/api/v1/auth/login');
     } else {
         ctx.body = { success: false };
         ctx.throw(401);
